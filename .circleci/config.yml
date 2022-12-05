@@ -142,7 +142,7 @@ jobs:
       - notify-on-failure
   notify-on-success:
     docker:
-      - image: cimg/base
+      - image: cimg/base:stable
     steps:
       - slack/notify:
           template: basic_success_1

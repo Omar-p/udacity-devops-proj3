@@ -196,6 +196,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - notify-on-failure
       # Here's where you will add some code to rollback on failure
 #
 #  configure-infrastructure:

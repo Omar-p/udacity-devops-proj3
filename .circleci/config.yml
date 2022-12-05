@@ -4,8 +4,33 @@ commands:
   notify-on-failure:
     steps:
       - slack/notify:
+          custom: |
+            {
+              "text": "",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "❌ *Failure* #${CIRCLE_BUILD_NUM} `${CIRCLE_PROJECT_REPONAME}` on `${CIRCLE_BRANCH}`"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
           event: fail
-          template: basic_fail_1
 
 #  destroy-environment:
 #    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -139,6 +164,38 @@ jobs:
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
       - notify-on-failure
+  notify-on-success:
+    docker:
+      - image: cimg/base
+    steps:
+      - slack/notify:
+          custom: |
+            {
+              "text": "",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "✅ *Success* #${CIRCLE_BUILD_NUM} `${CIRCLE_PROJECT_REPONAME}` on `${CIRCLE_BRANCH}`"
+                  }
+                },
+                {
+                  "type": "actions",
+                  "elements": [
+                    {
+                      "type": "button",
+                      "text": {
+                        "type": "plain_text",
+                        "text": "View Job"
+                      },
+                      "url": "${CIRCLE_BUILD_URL}"
+                    }
+                  ]
+                }
+              ]
+            }
+          event: pass
 #  deploy-infrastructure:
 #    docker:
 #      # Docker image here that supports AWS CLI
@@ -318,6 +375,15 @@ workflows:
           requires: [build-backend]
       - scan-frontend:
           requires: [build-frontend]
+      - notify-on-success:
+          requires:
+            - build-frontend
+            - build-backend
+            - test-frontend
+            - test-backend
+            - scan-backend
+            - scan-frontend
+
 #      - deploy-infrastructure:
 #          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
 #          filters:

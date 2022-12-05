@@ -1,6 +1,12 @@
 version: 2.1
 
-#commands:
+commands:
+  notify-on-failure:
+    steps:
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+
 #  destroy-environment:
 #    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
 #    parameters:
@@ -31,7 +37,12 @@ version: 2.1
 #            #  Add revert code here. You can find this in the Getting Started section.
 #              exit 1
 #            fi
-            
+
+orbs:
+  slack: circleci/slack@4.12.0
+
+
+
 jobs:
   build-frontend:
     docker:
@@ -46,6 +57,7 @@ jobs:
              cd frontend
              npm install
              npm run build
+      - notify-on-failure
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-dependencies
@@ -63,6 +75,7 @@ jobs:
             cd backend
             npm install
             npm run build
+      - notify-on-failure
       - save_cache:
           paths: [backend/node_modules]
           key: backend-dependencies
@@ -80,6 +93,7 @@ jobs:
             cd frontend
             npm install
             npm run test
+      - notify-on-failure
 
   test-backend:
     docker:
@@ -94,7 +108,7 @@ jobs:
             cd backend
             npm install
             npm run test
-
+      - notify-on-failure
   scan-frontend:
     docker:
       - image: cimg/node:13.8.0
@@ -109,7 +123,7 @@ jobs:
             npm install
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
-
+      - notify-on-failure
   scan-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -123,9 +137,8 @@ jobs:
             cd backend
             npm install
             npm audit fix --force --audit-level=critical
-            npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
-#
+      - notify-on-failure
 #  deploy-infrastructure:
 #    docker:
 #      # Docker image here that supports AWS CLI

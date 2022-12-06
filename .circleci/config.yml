@@ -59,7 +59,8 @@ commands:
             cd ~/project/backend
             if [[ -f "~/project/.circleci/out/migration-success" ]]; then
               npm install
-              npm run migrations:revert
+              npm run migrations:revert > revert.txt
+              echo revert.txt
             fi
 
 orbs:
@@ -287,9 +288,9 @@ jobs:
             --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --output text)
-            # your code here
+
             export API_URL="http://${BACKEND_PUBLIC_IP}:3030" 
-            echo "${API_URL}" >> frontend/.env
+            echo "http://${BACKEND_PUBLIC_IP}:3030" > frontend/.env
             echo "${API_URL}"
       - run:
           name: Deploy frontend objects
@@ -309,6 +310,7 @@ jobs:
       - checkout
       - install-aws-cli
       - install-nodejs13
+      - install-ansible
       - restore_cache:
           keys: [ backend-dependencies ]
       - run:
@@ -332,7 +334,7 @@ jobs:
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-            # attach workspace
+#             attach workspace
       - attach_workspace:
           at: ~/
       - run:

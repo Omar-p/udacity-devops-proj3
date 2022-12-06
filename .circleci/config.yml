@@ -261,7 +261,7 @@ jobs:
       - persist_to_workspace:
           root: ~/project
           paths:
-            - .circleci/out/
+            - .circleci/out/out/migration-success
       - revert-migrations
 #      - destroy-environment
       - notify-on-failure

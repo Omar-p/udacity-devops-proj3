@@ -300,6 +300,7 @@ jobs:
       - notify-on-failure
       # Here's where you will add some code to rollback on failure
 #
+
   deploy-backend:
     docker:
       - image: cimg/base:stable
@@ -308,28 +309,26 @@ jobs:
       - install-aws-cli
       - install-nodejs13
       - install-ansible
-      - restore_cache:
-          keys: [ backend-dependencies ]
+      - add_ssh_keys:
+          fingerprints:
+            - "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4"
+      - attach_workspace:
+          at: ~/
       - run:
           name: Install dependencies
           command: |
             cd backend
             npm install
       - run:
-          name: Package Backend
+          name: backend packages
           command: |
             cd backend
             npm run build
             tar -czf artifact.tar.gz dist/* package*
-            
-            mkdir ../.circleci/ansible/roles/deploy/files/
-            cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files/artifact.tar.gz
-      - add_ssh_keys:
-          fingerprints: [ "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4" ]
-      - attach_workspace:
-          at: ~/
+            cd .. 
+            cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files/
       - run:
-          name: export typeorm env var
+          name: Deploy backend
           command: |
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
@@ -338,7 +337,6 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
-      
 
       - revert-migrations
       - destroy-environment

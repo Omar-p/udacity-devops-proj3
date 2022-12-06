@@ -28,3 +28,6 @@
   shell: |
     sudo su -c "env PATH=$PATH:/usr/local/bin pm2 startup systemd -u ubuntu --hp /home/ubuntu"
     pm2 save
+
+- name: "list env for debugging purpose"
+  shell: env

@@ -327,21 +327,20 @@ jobs:
             cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files/artifact.tar.gz
       - add_ssh_keys:
           fingerprints: [ "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4" ]
+      - attach_workspace:
+          at: ~/
       - run:
           name: export typeorm env var
           command: |
             export TYPEORM_MIGRATIONS_DIR=./migrations
             export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
             export TYPEORM_MIGRATIONS=./migrations/*.ts
-#             attach workspace
-      - attach_workspace:
-          at: ~/
-      - run:
-          name: Deploy Backend
-          command: |
+            
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt deploy-backend.yml
+      
+
       - revert-migrations
       - destroy-environment
       - notify-on-failure

@@ -27,7 +27,7 @@
     export TYPEORM_PORT=5532
     export TYPEORM_USERNAME=postgres
     export TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-    export TYPEORM_PASSWORD={{ lookup('env', 'TYPEORM_PASSWORD') }}
+    export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}"
     export TYPEORM_DATABASE=glee
     export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations
     export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts

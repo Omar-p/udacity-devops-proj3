@@ -59,7 +59,7 @@ commands:
             cd ~/project/backend
             if [[ -f "~/project/.circleci/out/migration-success" ]]; then
               npm install
-              npm run migration:revert
+              npm run migrations:revert
             fi
 
 orbs:

@@ -241,7 +241,7 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - install-aws-cli
+#      - install-aws-cli
       - restore_cache:
           keys: [ backend-dependencies ]
       - run:
@@ -259,11 +259,11 @@ jobs:
               mkdir -p ~/project/.circleci/out && touch ~/project/.circleci/out/migration-success
             fi
       - persist_to_workspace:
-          root: ~/
+          root: ~/project
           paths:
-            - project/.circleci/out/
+            - .circleci/out/
       - revert-migrations
-      - destroy-environment
+#      - destroy-environment
       - notify-on-failure
 
   deploy-frontend:
@@ -408,42 +408,42 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
-      - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [ test-frontend, test-backend, scan-frontend, scan-backend ]
-          filters:
-            branches:
-              only: [ master ]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+#      - build-frontend
+#      - build-backend
+#      - test-frontend:
+#          requires: [build-frontend]
+#      - test-backend:
+#          requires: [build-backend]
+#      - scan-backend:
+#          requires: [build-backend]
+#      - scan-frontend:
+#          requires: [build-frontend]
+#      - deploy-infrastructure:
+#          requires: [ test-frontend, test-backend, scan-frontend, scan-backend ]
+#          filters:
+#            branches:
+#              only: [ master ]
+#      - configure-infrastructure:
+#          requires: [deploy-infrastructure]
       - run-migrations:
-          requires: [configure-infrastructure]
-      - deploy-frontend:
-          requires: [run-migrations]
-      - deploy-backend:
-          requires: [run-migrations]
-      - notify-on-success:
-          requires:
-            - build-frontend
-            - build-backend
-            - test-frontend
-            - test-backend
-            - scan-backend
-            - scan-frontend
-            - deploy-infrastructure
-            - configure-infrastructure
-            - run-migrations
-            - deploy-frontend
-            - deploy-backend
+#          requires: [configure-infrastructure]
+#      - deploy-frontend:
+#          requires: [run-migrations]
+#      - deploy-backend:
+#          requires: [run-migrations]
+#      - notify-on-success:
+#          requires:
+#            - build-frontend
+#            - build-backend
+#            - test-frontend
+#            - test-backend
+#            - scan-backend
+#            - scan-frontend
+#            - deploy-infrastructure
+#            - configure-infrastructure
+#            - run-migrations
+#            - deploy-frontend
+#            - deploy-backend
 #      - smoke-test:
 #          requires: [deploy-backend, deploy-frontend]
 #      - cloudfront-update:

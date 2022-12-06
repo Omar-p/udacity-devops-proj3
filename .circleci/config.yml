@@ -260,9 +260,9 @@ jobs:
               mkdir -p ~/project/.circleci/out && touch ~/project/.circleci/out/migration-success
             fi
       - persist_to_workspace:
-          root: ~/project
+          root: .
           paths:
-            - .circleci/out/out/migration-success
+            - .circleci/out/migration-success
       - revert-migrations
 #      - destroy-environment
       - notify-on-failure

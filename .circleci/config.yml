@@ -21,6 +21,15 @@ commands:
               sudo apt install software-properties-common
               sudo add-apt-repository --yes --update ppa:ansible/ansible
               sudo apt install ansible
+  install-nodejs13:
+     steps:
+       - run:
+           command: |
+             curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+             sudo apt install -y nodejs
+             
+             sudo npm install --global n
+             sudo n 13.8.0
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
@@ -231,13 +240,14 @@ jobs:
       - image: cimg/node:13.8.0
     steps:
       - checkout
-      - install-aws-cli
+#      - install-aws-cli
       - restore_cache:
           keys: [ backend-dependencies ]
       - run:
           name: Run migrations
           command: |
             cd backend
+            env
             npm run migrations >> migration-output.txt
       - run:
           name: Store migration result in a file.
@@ -252,8 +262,8 @@ jobs:
           paths:
             - project/.circleci/out/
       - revert-migrations
-      - destroy-environment
-      - notify-on-failure
+#      - destroy-environment
+#      - notify-on-failure
 
 #  deploy-frontend:
 #    docker:
@@ -354,36 +364,36 @@ jobs:
 workflows:
   default:
     jobs:
-      - build-frontend
+#      - build-frontend
       - build-backend
-      - test-frontend:
-          requires: [build-frontend]
-      - test-backend:
-          requires: [build-backend]
-      - scan-backend:
-          requires: [build-backend]
-      - scan-frontend:
-          requires: [build-frontend]
-      - deploy-infrastructure:
-          requires: [ test-frontend, test-backend, scan-frontend, scan-backend ]
-          filters:
-            branches:
-              only: [ master ]
-      - configure-infrastructure:
-          requires: [deploy-infrastructure]
+#      - test-frontend:
+#          requires: [build-frontend]
+#      - test-backend:
+#          requires: [build-backend]
+#      - scan-backend:
+#          requires: [build-backend]
+#      - scan-frontend:
+#          requires: [build-frontend]
+#      - deploy-infrastructure:
+#          requires: [ test-frontend, test-backend, scan-frontend, scan-backend ]
+#          filters:
+#            branches:
+#              only: [ master ]
+#      - configure-infrastructure:
+#          requires: [deploy-infrastructure]
       - run-migrations:
-          requires: [configure-infrastructure]
-      - notify-on-success:
-          requires:
-            - build-frontend
-            - build-backend
-            - test-frontend
-            - test-backend
-            - scan-backend
-            - scan-frontend
-            - deploy-infrastructure
-            - configure-infrastructure
-            - run-migrations
+          requires: [build-backend]
+#      - notify-on-success:
+#          requires:
+#            - build-frontend
+#            - build-backend
+#            - test-frontend
+#            - test-backend
+#            - scan-backend
+#            - scan-frontend
+#            - deploy-infrastructure
+#            - configure-infrastructure
+#            - run-migrations
 #      - deploy-frontend:
 #          requires: [run-migrations]
 #      - deploy-backend:

@@ -307,13 +307,16 @@ jobs:
     steps:
       - checkout
       - install-aws-cli
-      - install-nodejs13
       - install-ansible
+      - install-nodejs13
+
       - add_ssh_keys:
           fingerprints:
             - "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4"
       - attach_workspace:
           at: ~/
+      - restore_cache:
+          keys: [ backend-dependencies ]
       - run:
           name: Install dependencies
           command: |

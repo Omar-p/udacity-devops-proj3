@@ -127,6 +127,7 @@ jobs:
             npm install
             npm run test
       - notify-on-failure
+
   scan-frontend:
     docker:
       - image: cimg/node:13.8.0
@@ -142,6 +143,7 @@ jobs:
             npm audit fix --force --audit-level=critical
             npm audit --audit-level=critical
       - notify-on-failure
+
   scan-backend:
     docker:
       - image: cimg/node:13.8.0
@@ -209,7 +211,8 @@ jobs:
       - checkout
       - install ansible
       # Add ssh keys with fingerprint
-      - add_ssh_key: ["d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4"]
+      - add_ssh_key:
+          fingerprints: ["d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4"]
       # attach workspace
       - attach_workspace:
           at: ~/

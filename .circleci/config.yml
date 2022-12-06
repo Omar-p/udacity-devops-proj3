@@ -260,9 +260,9 @@ jobs:
               mkdir -p ~/project/.circleci/out && touch ~/project/.circleci/out/migration-success
             fi
       - persist_to_workspace:
-          root: .
+          root: .circleci/out
           paths:
-            - .circleci/out/migration-success
+            - ./migration-success
       - revert-migrations
       - destroy-environment
       - notify-on-failure
@@ -325,7 +325,7 @@ jobs:
             npm run build
             tar -czf artifact.tar.gz dist/* package*
             
-            cp ../backend/artifact.tar.gz ../.circleci/ansible/roles/deploy/files
+            cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files
       - add_ssh_keys:
           fingerprints: [ "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4" ]
       - run:

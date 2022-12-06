@@ -47,22 +47,23 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
 
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
+    description: Revert the last migration
     parameters:
-      # Add parameter here
+      Workflow_ID:
+        type: string
+        default: ${CIRCLE_WORKFLOW_ID:0:7}
     steps:
-      - attach_workspace:
-            at: ~/project/.circleci/out
       - run:
           name: Revert migrations
-          # Add when this will run
           when: on_fail
           command: |
-            cd ~/project/backend
-            if [[ -f "~/project/.circleci/out/migration-success" ]]; then
+            SUCCESS=$(curl --insecure  https://kvdb.io/${KVDB_BUCKET_ID}/migration_<< parameters.Workflow_ID >>)
+            # Logic for reverting the database state
+            if (( $SUCCESS == 1 ));
+            then
+              cd ~/project/backend
               npm install
-              npm run migrations:revert > revert.txt
-              echo revert.txt
+              npm run migration:revert
             fi
 
 orbs:
@@ -251,20 +252,15 @@ jobs:
           command: |
             cd backend
             npm install
-            npm run migrations >> migration-output.txt
+            npm run migrations > migration-output.txt
             cat migration-output.txt
       - run:
-          name: Store migration result in a file.
+          name: Send migration status to kvdb.io
           command: |
-            cd backend
-            if grep -q "has been executed successfully." migration-output.txt
+            if grep -q "has been executed successfully." ~/project/backend/migration-output.txt
             then
-              mkdir -p ~/project/.circleci/out && touch ~/project/.circleci/out/migration-success
+            curl https://kvdb.io/${KVDB_BUCKET}/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-      - persist_to_workspace:
-          root: .circleci/out
-          paths:
-            - ./migration-success
       - revert-migrations
       - destroy-environment
       - notify-on-failure

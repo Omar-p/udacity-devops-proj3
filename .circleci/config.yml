@@ -256,7 +256,7 @@ jobs:
             cd backend
             if grep -q "has been executed successfully." migration-output.txt
             then
-              touch ~/project/.circleci/out/migration-success
+              mkdir -p ~/project/.circleci/out && touch ~/project/.circleci/out/migration-success
             fi
       - persist_to_workspace:
           root: ~/
@@ -426,7 +426,7 @@ workflows:
       - configure-infrastructure:
           requires: [deploy-infrastructure]
       - run-migrations:
-          requires: [build-backend]
+          requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
       - deploy-backend:

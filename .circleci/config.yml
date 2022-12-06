@@ -51,6 +51,8 @@ commands:
     parameters:
       # Add parameter here
     steps:
+      - attach_workspace:
+            at: ~/project/.circleci/out
       - run:
           name: Revert migrations
           # Add when this will run
@@ -325,7 +327,8 @@ jobs:
             npm run build
             tar -czf artifact.tar.gz dist/* package*
             
-            cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files
+            mkdir ../.circleci/ansible/roles/deploy/files/
+            cp artifact.tar.gz ../.circleci/ansible/roles/deploy/files/artifact.tar.gz
       - add_ssh_keys:
           fingerprints: [ "d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4" ]
       - run:

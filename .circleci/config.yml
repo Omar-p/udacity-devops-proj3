@@ -36,25 +36,22 @@ commands:
             aws cloudformation delete-stack --stack-name udapeople-backend-<< parameters.Workflow_ID >>
             aws s3 rm s3://udapeople-<< parameters.Workflow_ID >> --recursive
             aws cloudformation delete-stack --stack-name udapeople-frontend-<< parameters.Workflow_ID >>
-#
-#  revert-migrations:
-#    description: Revert the last migration if successfully run in the current workflow.
-#    parameters:
-#      # Add parameter here
-#    steps:
-#      - run:
-#          name: Revert migrations
-#          # Add when this will run
-#          command: |
-#            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-#            SUCCESS = 1
-#            if(( $SUCCESS==1 ));
-#            then
-#            #  cd ~/project/backend
-#            #  npm install
-#            #  Add revert code here. You can find this in the Getting Started section.
-#              exit 1
-#            fi
+
+  revert-migrations:
+    description: Revert the last migration if successfully run in the current workflow.
+    parameters:
+      # Add parameter here
+    steps:
+      - run:
+          name: Revert migrations
+          # Add when this will run
+          when: on_fail
+          command: |
+            cd ~/project/backend
+            if [[ -f "~/project/.circleci/outputs/db_migration_success" ]]; then
+              npm i
+              npm run migration:revert
+            fi
 
 orbs:
   slack: circleci/slack@4.12.0
@@ -211,6 +208,7 @@ jobs:
     steps:
       - checkout
       - install-ansible
+      - install-aws-cli
       # Add ssh keys with fingerprint
       - add_ssh_keys:
           fingerprints: ["d7:8f:b1:7b:ce:33:f9:3b:03:a6:7e:ef:89:1f:d4:a4"]

@@ -247,7 +247,9 @@ jobs:
           name: Run migrations
           command: |
             cd backend
-            env
+            echo $TYPEORM_ENTITIES
+            echo $pwd
+            echo $TYPEORM_HOST
             npm run migrations >> migration-output.txt
       - run:
           name: Store migration result in a file.
@@ -300,7 +302,9 @@ jobs:
 #      - run:
 #          name: Deploy backend
 #          command: |
-#            # your code here
+#  export TYPEORM_MIGRATIONS_DIR=./migrations
+#  export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
+#  export TYPEORM_MIGRATIONS=./migrations/*.ts
 #      # Here's where you will add some code to rollback on failure
 #
 #  smoke-test:

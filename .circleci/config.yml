@@ -48,8 +48,8 @@ commands:
           when: on_fail
           command: |
             cd ~/project/backend
-            if [[ -f "~/project/.circleci/outputs/db_migration_success" ]]; then
-              npm i
+            if [[ -f "~/project/.circleci/out/migration-success" ]]; then
+              npm install
               npm run migration:revert
             fi
 
@@ -225,23 +225,36 @@ jobs:
       - notify-on-failure
       # Here's where you will add some code to rollback on failure
 #
-#  run-migrations:
-#    docker:
-#      # Docker image here that supports NodeJS
-#    steps:
-#      # Checkout code from git
-#      - run:
-#          name: Run migrations
-#          command: |
-#            # Your code here
-#            exit 1
-#      - run:
-#          name: Send migration results to memstash
-#          command: |
-#            # Your code here
-#            exit 1
-#     # Here's where you will add some code to rollback on failure
-#
+  run-migrations:
+    run-migrations:
+      docker:
+        - image: circleci/node:13.8.0
+      steps:
+        - install-aws-cli
+        - checkout
+        - restore_cache:
+            keys: [ backend-dependencies ]
+        - run:
+            name: Run migrations
+            command: |
+              cd backend
+              npm run migrations >> migration-output.txt
+        - run:
+            name: Store migration result in a file.
+            command: |
+              cd backend
+              if grep -q "has been executed successfully." migration-output.txt
+              then
+                touch ~/project/.circleci/out/migration-success
+              fi
+        - persist_to_workspace:
+            root: ~/
+            paths:
+              - project/.circleci/out/
+        - revert-migrations
+        - destroy-environment
+        - notify-on-failure
+
 #  deploy-frontend:
 #    docker:
 #      # Docker image here that supports AWS CLI
@@ -358,6 +371,8 @@ workflows:
               only: [ master ]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
       - notify-on-success:
           requires:
             - build-frontend
@@ -368,8 +383,7 @@ workflows:
             - scan-frontend
             - deploy-infrastructure
             - configure-infrastructure
-#      - run-migrations:
-#          requires: [configure-infrastructure]
+            - run-migrations
 #      - deploy-frontend:
 #          requires: [run-migrations]
 #      - deploy-backend:

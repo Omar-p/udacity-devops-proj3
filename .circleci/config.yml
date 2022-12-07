@@ -443,8 +443,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-#      - smoke-test:
-#          requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       - notify-on-success:
           requires:
             - build-frontend
@@ -458,7 +458,7 @@ workflows:
             - run-migrations
             - deploy-frontend
             - deploy-backend
-#            - smoke-test
+            - smoke-test
 #      - cloudfront-update:
 #          requires: [smoke-test]
 #      - cleanup:

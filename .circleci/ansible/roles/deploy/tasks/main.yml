@@ -4,15 +4,15 @@
   become_user: root
   become_method: sudo
   shell: |
-    echo TYPEORM_ENTITIES=~/backend/dist/modules/domain/**/*.entity{.ts,.js} >> /etc/environment
+    echo TYPEORM_ENTITIES=/home/ubuntu/backend/dist/modules/domain/**/*.entity{.ts,.js} >> /etc/environment
     echo TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}" >> /etc/environment
     echo TYPEORM_PORT=5432 >> /etc/environment
     echo TYPEORM_USERNAME=postgres >> /etc/environment
     echo TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}" >> /etc/environment
     echo TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}" >> /etc/environment
     echo TYPEORM_DATABASE=glee >> /etc/environment
-    echo TYPEORM_MIGRATIONS_DIR=~/backend/dist/migrations >> /etc/environment
-    echo TYPEORM_MIGRATIONS=~/backend/dist/migrations/*.ts >> /etc/environment
+    echo TYPEORM_MIGRATIONS_DIR=/home/ubuntu/backend/dist/migrations >> /etc/environment
+    echo TYPEORM_MIGRATIONS=/home/ubuntu/backend/dist/migrations/*.ts >> /etc/environment
     echo NODE_ENV=production >> /etc/environment
     echo VERSION=1 >> /etc/environment
 

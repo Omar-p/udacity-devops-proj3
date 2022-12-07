@@ -17,9 +17,9 @@
     echo VERSION=1 >> /etc/environment
 
 - name: "Creates backend app directory"
-  file:
-    path: ~/backend
-    state: directory
+  shell: |
+    cd ~
+    mkdir backend
 
 - name: "Unarchive backend files"
   unarchive:
@@ -29,11 +29,7 @@
 - name: "Installing Node Dependencies"
   shell: |
     cd ~/backend
-    npm i
-
-
-
-    
+    npm i    
 
 - name: Start the app
   shell: |

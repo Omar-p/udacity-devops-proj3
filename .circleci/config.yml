@@ -363,8 +363,7 @@ jobs:
             echo $BACKEND_PUBLIC_IP
             if curl -s $API_URL/api/status | grep "ok"
             then
-              echo  failure screenshot6
-              exit 1
+              exit 0
             else
               exit 1
             fi

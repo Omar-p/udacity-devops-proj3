@@ -334,10 +334,7 @@ jobs:
             cp backend/artifact.tar.gz .circleci/ansible/roles/deploy/files/
       - run:
           name: Deploy backend
-          command: |
-            export TYPEORM_MIGRATIONS_DIR=./migrations
-            export TYPEORM_ENTITIES=./modules/domain/**/*.entity{.ts,.js}
-            export TYPEORM_MIGRATIONS=./migrations/*.ts
+          command:
             
             cd .circleci/ansible
             cat inventory.txt
@@ -367,7 +364,8 @@ jobs:
             echo $BACKEND_PUBLIC_IP
             if curl -s $API_URL/api/status | grep "ok"
             then
-              exit 0
+              echo  failure screenshot6
+              exit 1
             else
               exit 1
             fi
@@ -446,8 +444,8 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-#      - smoke-test:
-#          requires: [deploy-backend, deploy-frontend]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
       - notify-on-success:
           requires:
             - build-frontend
@@ -461,7 +459,7 @@ workflows:
             - run-migrations
             - deploy-frontend
             - deploy-backend
-#            - smoke-test
+            - smoke-test
 #      - cloudfront-update:
 #          requires: [smoke-test]
 #      - cleanup:

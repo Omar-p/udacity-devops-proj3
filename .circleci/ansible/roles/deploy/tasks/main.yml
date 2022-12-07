@@ -13,11 +13,6 @@
   shell: |
     cd ~/backend
     npm i
-- name: "Executing Node app with PM2"
-  shell: |
-    cd ~/backend/dist
-    pm2 stop default
-    pm2 start main.js
 
 
 - name: Start the app
@@ -31,6 +26,7 @@
     export TYPEORM_DATABASE=glee
     export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations
     export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts
+    cd ~/backend/dist
     pm2 stop default
-    pm2 start -f /home/ubuntu/backend/dist/main.js
+    pm2 start main.js
 

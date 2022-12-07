@@ -1,20 +1,4 @@
 ---
-- name: "Creates backend app directory"
-  file:
-    path: ~/backend
-    state: directory
-
-- name: "Unarchive backend files"
-  unarchive:
-    src: artifact.tar.gz
-    dest: ~/backend
-
-- name: "Installing Node Dependencies"
-  shell: |
-    cd ~/backend
-    npm i
-
-
 - name: set env vars
   become: true
   become_user: root
@@ -31,6 +15,24 @@
     echo TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts >> /etc/environment
     echo NODE_ENV=production >> /etc/environment
     echo VERSION=1 >> /etc/environment
+
+- name: "Creates backend app directory"
+  file:
+    path: ~/backend
+    state: directory
+
+- name: "Unarchive backend files"
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/backend
+
+- name: "Installing Node Dependencies"
+  shell: |
+    cd ~/backend
+    npm i
+
+
+
     
 
 - name: Start the app

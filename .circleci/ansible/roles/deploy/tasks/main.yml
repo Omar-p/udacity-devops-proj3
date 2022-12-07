@@ -26,6 +26,7 @@
     echo export TYPEORM_DATABASE=glee >> ~/.bashrc
     echo export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations >> ~/.bashrc
     echo export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts >> ~/.bashrc
+    echo export NODE_ENV=production >> ~/.bashrc
     cd ~/backend/dist
     pm2 stop default
     pm2 start main.js

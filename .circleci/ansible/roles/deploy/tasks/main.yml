@@ -17,15 +17,15 @@
 
 - name: Start the app
   shell: |
-    export TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js}
-    export TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}"
-    export TYPEORM_PORT=5532
-    export TYPEORM_USERNAME=postgres
-    export TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}"
-    export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}"
-    export TYPEORM_DATABASE=glee
-    export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations
-    export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts
+    echo export TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js} >> ~/.bashrc
+    echo export TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}" >> ~/.bashrc
+    echo export TYPEORM_PORT=5532 >> ~/.bashrc
+    echo export TYPEORM_USERNAME=postgres >> ~/.bashrc
+    echo export TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}" >> ~/.bashrc
+    echo export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}" >> ~/.bashrc
+    echo export TYPEORM_DATABASE=glee >> ~/.bashrc
+    echo export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations >> ~/.bashrc
+    echo export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts >> ~/.bashrc
     cd ~/backend/dist
     pm2 stop default
     pm2 start main.js

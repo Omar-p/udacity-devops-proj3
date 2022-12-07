@@ -15,23 +15,31 @@
     npm i
 
 
-- name: Start the app
+- name: set env vars
   become: true
   become_user: root
   become_method: sudo
   shell: |
-    echo export TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js} >> /etc/environment
-    echo export TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}" >> /etc/environment
-    echo export TYPEORM_PORT=5432 >> /etc/environment
-    echo export TYPEORM_USERNAME=postgres >> /etc/environment
-    echo export TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}" >> /etc/environment
-    echo export TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}" >> /etc/environment
-    echo export TYPEORM_DATABASE=glee >> /etc/environment
-    echo export TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations >> /etc/environment
-    echo export TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts >> /etc/environment
-    echo export NODE_ENV=production >> /etc/environment
+    echo TYPEORM_ENTITIES=./backend/dist/modules/domain/**/*.entity{.ts,.js} >> /etc/environment
+    echo TYPEORM_HOST="{{ lookup('env', 'TYPEORM_HOST') }}" >> /etc/environment
+    echo TYPEORM_PORT=5432 >> /etc/environment
+    echo TYPEORM_USERNAME=postgres >> /etc/environment
+    echo TYPEORM_CONNECTION="{{ lookup('env', 'TYPEORM_CONNECTION') }}" >> /etc/environment
+    echo TYPEORM_PASSWORD="{{ lookup('env', 'TYPEORM_PASSWORD') }}" >> /etc/environment
+    echo TYPEORM_DATABASE=glee >> /etc/environment
+    echo TYPEORM_MIGRATIONS_DIR=./backend/dist/migrations >> /etc/environment
+    echo TYPEORM_MIGRATIONS=./backend/dist/migrations/*.ts >> /etc/environment
+    echo NODE_ENV=production >> /etc/environment
+    echo VERSION=1 >> /etc/environment
+    
+
+- name: Start the app
+  shell: |
     source /etc/environment
-    cd /home/ubuntu/backend/dist
+    echo $NODE_ENV
+    cd ~/backend/dist
     pm2 stop default
     pm2 start main.js
+
+    
 

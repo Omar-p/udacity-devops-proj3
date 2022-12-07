@@ -17,18 +17,23 @@
     echo VERSION=1 >> /etc/environment
 
 - name: "Creates backend app directory"
-  shell: |
-    cd ~
-    mkdir backend
+  become: true
+  become_method: sudo
+  become_user: root
+  shell: |    
+    mkdir -p /home/ubuntu/backend
 
 - name: "Unarchive backend files"
+  become: true
+  become_method: sudo
+  become_user: root
   unarchive:
     src: artifact.tar.gz
-    dest: ~/backend
+    dest: /home/ubuntu/backend
 
 - name: "Installing Node Dependencies"
   shell: |
-    cd ~/backend
+    cd /home/ubuntu/backend
     npm i    
 
 - name: Start the app

@@ -21,7 +21,6 @@
     mkdir -p /home/ubuntu/backend
 
 - name: "Unarchive backend files"
-  become: true
   unarchive:
     src: artifact.tar.gz
     dest: /home/ubuntu/backend
@@ -32,7 +31,6 @@
     npm i    
 
 - name: Start the app
-  become: true
   shell: |
     cd /home/ubuntu/backend/
     pm2 stop default

@@ -17,6 +17,7 @@
     echo VERSION=1 >> /etc/environment
 
 - name: "Creates backend app directory"
+  become: true
   shell: |    
     mkdir -p /home/ubuntu/backend
 

@@ -1,14 +1,14 @@
-1- URL01
+1 - URL01
   https://github.com/Omar-p/udacity-devops-proj3
 
-2- s3 bucket URL02
+2 - s3 bucket URL02
   http://udapeople-def7f9a.s3-website-us-east-1.amazonaws.com
 
-3- cloudfront URL03
+3 - cloudfront URL03
   http://d29jlh5986ypir.cloudfront.net
 
-4- backend status URL04
+4 - backend status URL04
   http://34.228.180.19:3030/api/status
 
-5- prometheus server url URL05
+5 - prometheus server url URL05
   http://54.226.126.202:9090/
